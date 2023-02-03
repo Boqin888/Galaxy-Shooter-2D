@@ -43,14 +43,12 @@ public class Asteroid : MonoBehaviour
             Destroy(this.gameObject, 1.5f);
             _spawnManager.StartSpawning();
         }
-
-
-        if (other.tag == "laser")                                                      // working if copied but not working if typed????
+        if (other.tag == "Laser")
         {
-            instantiate(_explosionprefab, transform.position, quaternion.identity);
-            destroy(other.gameobject);
-            _spawnmanager.startspawning();
-            destroy(this.gameobject, 1.5f);
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(other.gameObject);
+            _spawnManager.StartSpawning();
+            Destroy(this.gameObject, 1.5f);
         }
     }
 }
