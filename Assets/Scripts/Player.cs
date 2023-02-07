@@ -25,7 +25,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _shieldActive = false;
     [SerializeField]
+    private bool _shieldActive1 = false;
+    [SerializeField]
+    private bool _shieldActive2 = false;
+    [SerializeField]
     private GameObject _shieldVisualizer;
+    [SerializeField]
+    private GameObject _shieldVisualizer1;
+    [SerializeField]
+    private GameObject _shieldVisualizer2;
     [SerializeField]
     private int _score;
     private UIManager _uiManager;
@@ -37,6 +45,9 @@ public class Player : MonoBehaviour
     private AudioClip _laserSoundClip;
     [SerializeField]
     private AudioSource _audioSource;
+    private float _fasterSpeed = 10f;
+
+    private int _ammoCount = 15;
 
 
     // Start is called before the first frame update
@@ -82,9 +93,20 @@ public class Player : MonoBehaviour
         //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        
-        transform.Translate(direction * _speed * Time.deltaTime);    
-      
+
+        // 2D Game Part III ---------------------------------------------------------------------------------------------------------
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            Debug.Log("Shift pressed");
+            transform.Translate(direction * _fasterSpeed * Time.deltaTime);
+        } 
+        else
+        {
+            transform.Translate(direction * _speed * Time.deltaTime);
+        }
+        // 2D Game Part III ---------------------------------------------------------------------------------------------------------
+
+
         if (transform.position.y >= 3)
         {
             transform.position = new Vector3(transform.position.x, 3, 0);
@@ -110,16 +132,18 @@ public class Player : MonoBehaviour
     void FireLaser()
     {
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire) //GetKey for continuous fire
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _ammoCount > 0)                                 //GetKey for continuous fire
         {
             _canFire = Time.time + _fireRate;
             if (isTripleShotActive == true)
             {
                 Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+                AmmoDisplay();
             }
             else
             {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                AmmoDisplay();
             }       
         }
 
@@ -132,9 +156,23 @@ public class Player : MonoBehaviour
         {
             _shieldActive = false;
             _shieldVisualizer.SetActive(false);
+            ShieldActive1();                            // part III
             return;
         }
-        
+        if (_shieldActive1 == true)
+        {
+            _shieldActive1 = false;
+            _shieldVisualizer1.SetActive(false);
+            ShieldActive2();
+            return;
+        }
+        if (_shieldActive2 == true)
+        {
+            _shieldActive2 = false;
+            _shieldVisualizer2.SetActive(false);
+            return;
+        }
+
         _lives -= 1;
         if (_lives == 2)
         {
@@ -191,11 +229,29 @@ public class Player : MonoBehaviour
         _shieldActive = true;
         _shieldVisualizer.SetActive(true);
     }
+// 2D Game Part III -------------------------------------------------------------------------------
+    public void ShieldActive1()
+    {
+        _shieldActive1 = true;
+        _shieldVisualizer1.SetActive(true);
+    }
+    public void ShieldActive2()
+    {
+        _shieldActive2 = true;
+        _shieldVisualizer2.SetActive(true);
+    }
+// 2D Game Part III -------------------------------------------------------------------------------
 
     public void AddScore(int points)
     {
         _score += points;
         _uiManager.UpdateScore(_score);
+    }
+
+    public void AmmoDisplay()
+    {
+        _ammoCount -= 1;
+        _uiManager.UpdateAmmo(_ammoCount);
     }
 }
 

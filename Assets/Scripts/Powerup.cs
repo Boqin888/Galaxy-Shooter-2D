@@ -54,6 +54,8 @@ public class Powerup : MonoBehaviour
                         break;
                     case 2:
                         player.ShieldActive();
+                        //player._shieldVisualizer1.SetActive(false);
+                        //player._shieldVisualizer2.SetActive(false);
                         break;
                     default:
                         Debug.Log("Default");
