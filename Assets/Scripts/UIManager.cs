@@ -10,7 +10,11 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Image _LivesImg;
     [SerializeField]
+    private Image _LivesImg1;
+    [SerializeField]
     private Sprite[] _liveSprites;
+    [SerializeField]
+    private Sprite[] _liveSprites1;
     [SerializeField]
     private Text _gameOverText;
     [SerializeField]
@@ -18,6 +22,9 @@ public class UIManager : MonoBehaviour
     private GameManager _gameManager;
     [SerializeField]
     private Text _ammoCountText;
+    private bool _outOfAmmo;
+    [SerializeField]
+    private Text _speedCharger;
 
 
 
@@ -25,7 +32,9 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
-        _ammoCountText.text = "Ammo: " + 15;
+        _ammoCountText.text = "Ammo: " + 3;
+        _speedCharger.text = "l";
+        _LivesImg1.gameObject.SetActive(false);
         _gameOverText.gameObject.SetActive(false);
         _restartText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -41,20 +50,38 @@ public class UIManager : MonoBehaviour
         _scoreText.text = "Score: " + playerScore.ToString(); // just playerScore works too
     }
 
-    public void UpdateAmmo (int ammoCount)
-    {
-        _ammoCountText.text = "Ammo: " + ammoCount.ToString();
-
+    public void UpdateAmmo(int ammoCount)
+    {              
         if (ammoCount == 0)
         {
-            StartCoroutine(AmmoCountFllickerRoutine());
+            _outOfAmmo = true;
+            StartCoroutine(AmmoCountFllickerRoutine(ammoCount + 1));
         }
+        else
+        {
+            _outOfAmmo = false;
+            _ammoCountText.text = "Ammo: " + ammoCount;
+        }          
     }
+
+
 
     public void UpdateLives(int currentLives)
     {
-        _LivesImg.sprite = _liveSprites[currentLives];
-
+        if (currentLives > 6)
+        {
+            return;
+        }
+        if (currentLives > 3)
+        {
+            _LivesImg1.gameObject.SetActive(true);
+            _LivesImg1.sprite = _liveSprites1[currentLives-4];
+        }
+        if (currentLives <= 3)
+        {
+            _LivesImg1.gameObject.SetActive(false);
+            _LivesImg.sprite = _liveSprites[currentLives];
+        }
         if (currentLives == 0)
         {
             GameOverSequence();
@@ -78,18 +105,27 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(.5f);
             _gameOverText.text = "";
             yield return new WaitForSeconds(.5f);
-        }   
+        }
     }
 
-    IEnumerator AmmoCountFllickerRoutine()
+    IEnumerator AmmoCountFllickerRoutine(int ammo)
     {
-        while (true)
+        while (_outOfAmmo == true)
         {
             _ammoCountText.text = "Ammo: " + 0;
             yield return new WaitForSeconds(.5f);
             _ammoCountText.text = "";
             yield return new WaitForSeconds(.5f);
         }
+        _ammoCountText.text = "Ammo: " + ammo;
     }
+
+    public void Charger(string charging)
+    {
+        _speedCharger.text = charging;
+    }
+
+   
+        
 }
 

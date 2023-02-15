@@ -13,10 +13,16 @@ public class Powerup : MonoBehaviour
     [SerializeField]
     private AudioClip _clip;
 
+    private UIManager _uiManager;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("The UI Manager is NULL");
+        }
     }
 
     // Update is called once per frame
@@ -33,7 +39,6 @@ public class Powerup : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -54,8 +59,15 @@ public class Powerup : MonoBehaviour
                         break;
                     case 2:
                         player.ShieldActive();
-                        //player._shieldVisualizer1.SetActive(false);
-                        //player._shieldVisualizer2.SetActive(false);
+                        break;
+                    case 3:
+                        player.MoreAmmoActive();
+                        break;
+                    case 4:
+                        player.Damage(-1);
+                        break;
+                    case 5:
+                        player.EnhancedTripleShotActive();
                         break;
                     default:
                         Debug.Log("Default");

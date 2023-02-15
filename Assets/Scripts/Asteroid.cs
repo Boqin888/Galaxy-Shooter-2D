@@ -31,13 +31,13 @@ public class Asteroid : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         
-        Debug.Log("Collided " + other.tag);  // tells what tag collided with
+        //Debug.Log("Collided " + other.tag);  // tells what tag collided with
         if (other.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
-                player.Damage();
+                player.Damage(1);
             }
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject, 1.5f);

@@ -48,14 +48,14 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Collided");
+        //Debug.Log("Collided");
         if (other.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
             if (player != null) 
             {
                 player.AddScore(10);
-                player.Damage();
+                player.Damage(1);
             }
             _anim.SetTrigger("OnEnemyDeath");                            // can also pass OnEnemyDeath ID
             _speed = 0;
@@ -69,7 +69,6 @@ public class Enemy : MonoBehaviour
             Destroy(other.gameObject);
             if(_player != null)
             {
-               
                 _player.AddScore(10);
             }
             _anim.SetTrigger("OnEnemyDeath");

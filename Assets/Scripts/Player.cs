@@ -18,9 +18,13 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripleShotPrefab;
     [SerializeField]
-    private bool isTripleShotActive = false;
+    private bool _isTripleShotActive = false;
     [SerializeField]
-    private bool moreSpeed = false;
+    private GameObject _enhancedTripleShotPrefab;
+    [SerializeField]
+    private bool _isEnhancedTripleShotActive = false;
+    [SerializeField]
+    private bool _moreSpeed = false;
     private int _speedMultiplier = 2;
     [SerializeField]
     private bool _shieldActive = false;
@@ -47,16 +51,31 @@ public class Player : MonoBehaviour
     private AudioSource _audioSource;
     private float _fasterSpeed = 10f;
 
-    private int _ammoCount = 15;
+    private int _ammoCount = 3;
+
+    [SerializeField]
+    private GameObject _smallThruster;
+    [SerializeField]
+    private GameObject _bigThruster;
+    [SerializeField]
+    private bool _shiftSpeedActive = false;
+    private string _chargingText = "l";
+    private bool _isDischarging = false;
+
+    //[SerializeField]
+    //private bool _enhancedBullets = false;
+    //private Laser _enhancedLaser;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(SpeedCharging());
         transform.position = new Vector3(0,-4,0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); //could also put in Spawn Manager tag
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+        //_enhancedLaser = GameObject.Find("laser").GetComponent<Laser >(); // secondary fire powerup attempt
 
         if (_audioSource == null)
         {
@@ -74,6 +93,11 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The UI Manager is NULL");
         }
+        // secondary fire powerup attempt
+        //if (_enhancedLaser == null)
+        //{
+        //    Debug.LogError("Enhanced Laser is NULL");
+        //}
     }
 
     // Update is called once per frame
@@ -95,14 +119,22 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 
         // 2D Game Part III ---------------------------------------------------------------------------------------------------------
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && _shiftSpeedActive == true)
         {
-            Debug.Log("Shift pressed");
             transform.Translate(direction * _fasterSpeed * Time.deltaTime);
+            _smallThruster.gameObject.SetActive(false);
+            _bigThruster.gameObject.SetActive(true);
+            if (_isDischarging != true)
+            {
+                StartCoroutine(SpeedDecharging());
+            }
+            
         } 
         else
         {
             transform.Translate(direction * _speed * Time.deltaTime);
+            _bigThruster.gameObject.SetActive(false);
+            _smallThruster.gameObject.SetActive(true);
         }
         // 2D Game Part III ---------------------------------------------------------------------------------------------------------
 
@@ -135,9 +167,14 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _ammoCount > 0)                                 //GetKey for continuous fire
         {
             _canFire = Time.time + _fireRate;
-            if (isTripleShotActive == true)
+            if (_isTripleShotActive == true)
             {
                 Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+                AmmoDisplay();
+            }
+            else if (_isEnhancedTripleShotActive == true)
+            {
+                Instantiate(_enhancedTripleShotPrefab, transform.position, Quaternion.identity);
                 AmmoDisplay();
             }
             else
@@ -150,7 +187,7 @@ public class Player : MonoBehaviour
         _audioSource.Play();
     }
 
-    public void Damage() 
+    public void Damage(int livesChange) 
     {
         if (_shieldActive == true)
         {
@@ -172,8 +209,15 @@ public class Player : MonoBehaviour
             _shieldVisualizer2.SetActive(false);
             return;
         }
-
-        _lives -= 1;
+        if (_lives < 6)
+        {
+            _lives -= livesChange;
+        }
+        else
+        {
+            return;
+        }
+        
         if (_lives == 2)
         {
             _leftEngine.SetActive(true);
@@ -194,32 +238,32 @@ public class Player : MonoBehaviour
 
     public void TripleShotActive()
     {
-        isTripleShotActive = true;
+        _isTripleShotActive = true;
         StartCoroutine(TripleShotPowerDownRoutine());
     }
 
     IEnumerator TripleShotPowerDownRoutine()
     {
-        while (isTripleShotActive == true)
+        while (_isTripleShotActive == true)
         {
             yield return new WaitForSeconds(5f);
-            isTripleShotActive = false;
+            _isTripleShotActive = false;
         }
     }
 
     public void MoreSpeedActive()
     {
-        moreSpeed = true;
+        _moreSpeed = true;
         _speed *= _speedMultiplier;
         StartCoroutine(MoreSpeedPowerDownRoutine());
     }
 
     IEnumerator MoreSpeedPowerDownRoutine()
     {
-        while (moreSpeed == true)
+        while (_moreSpeed == true)
         {
             yield return new WaitForSeconds(5f);
-            moreSpeed = false;
+            _moreSpeed = false;
             _speed /= _speedMultiplier;
         }
     }
@@ -252,6 +296,84 @@ public class Player : MonoBehaviour
     {
         _ammoCount -= 1;
         _uiManager.UpdateAmmo(_ammoCount);
+    }
+
+    public void MoreAmmoActive()
+    {
+        _ammoCount += 1;
+        _uiManager.UpdateAmmo(_ammoCount);
+    }
+
+    // didn't get this to work with the lives powerup so modified damage method to allow for inverse (-1) damage instead
+    //public void livespowerup()
+    //{
+    //    _lives += 1;
+    //    _uimanager.updatelives(_lives);
+    //}
+
+    // secondary fire powerup attempt
+    //public void EnhancedBulletsActive()
+    //{
+    //    _enhancedBullets = true;
+    //    _enhancedLaser.EnhanceBulletsON();
+    //    StartCoroutine(EnhancedBulletsPowerDownRoutine());
+    //}
+
+    //IEnumerator EnhancedBulletsPowerDownRoutine()
+    //{
+    //    while (_enhancedBullets == true)
+    //    {
+    //        yield return new WaitForSeconds(8f);
+    //        _enhancedBullets = false;
+    //        //_enhancedLaser.EnhanceBulletsOFF();
+    //    }
+    //}
+
+    public void EnhancedTripleShotActive()
+    {
+        _isEnhancedTripleShotActive = true;
+        StartCoroutine(TripleShotPowerDownRoutine());
+    }
+
+    IEnumerator EnhancedTripleShotPowerDownRoutine()
+    {
+        while (_isTripleShotActive == true)
+        {
+            yield return new WaitForSeconds(5f);
+            _isEnhancedTripleShotActive = false;
+        }
+    }
+
+    IEnumerator SpeedDecharging()
+    {
+        _isDischarging = true;    
+        while (_shiftSpeedActive == true)
+        {
+            yield return new WaitForSeconds(0.1f);
+            _chargingText = _chargingText.Remove(_chargingText.Length-1);
+            _uiManager.Charger(_chargingText);
+            if (_chargingText == "l")
+            {
+                _shiftSpeedActive = false;
+                StartCoroutine(SpeedCharging());
+            }
+        }
+        _isDischarging = false;
+    }
+
+    IEnumerator SpeedCharging()
+    {
+        while (_shiftSpeedActive == false)
+        {
+            yield return new WaitForSeconds(0.1f);
+            _chargingText += "l";
+            _uiManager.Charger(_chargingText);
+            if (_chargingText == "llllllllllllllllllll")
+            {
+                _shiftSpeedActive = true;
+                
+            }
+        }
     }
 }
 
