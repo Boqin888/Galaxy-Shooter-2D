@@ -61,11 +61,7 @@ public class Player : MonoBehaviour
     private bool _shiftSpeedActive = false;
     private string _chargingText = "l";
     private bool _isDischarging = false;
-
-    //[SerializeField]
-    //private bool _enhancedBullets = false;
-    //private Laser _enhancedLaser;
-
+    private Camera _camera;
 
     // Start is called before the first frame update
     void Start()
@@ -75,6 +71,7 @@ public class Player : MonoBehaviour
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); //could also put in Spawn Manager tag
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
+        _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
         //_enhancedLaser = GameObject.Find("laser").GetComponent<Laser >(); // secondary fire powerup attempt
 
         if (_audioSource == null)
@@ -93,11 +90,10 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The UI Manager is NULL");
         }
-        // secondary fire powerup attempt
-        //if (_enhancedLaser == null)
-        //{
-        //    Debug.LogError("Enhanced Laser is NULL");
-        //}
+        if (_camera == null)
+        {
+            Debug.LogError("The camera is NULL");
+        }
     }
 
     // Update is called once per frame
@@ -209,15 +205,22 @@ public class Player : MonoBehaviour
             _shieldVisualizer2.SetActive(false);
             return;
         }
-        if (_lives < 6)
+        if (_lives < 6 && livesChange < 0)
         {
             _lives -= livesChange;
+        }
+        else if (_lives < 6 && livesChange > 0)
+        {
+            _lives -= livesChange;
+            StartCoroutine(_camera.CameraShake());
         }
         else
         {
             return;
         }
+
         
+
         if (_lives == 2)
         {
             _leftEngine.SetActive(true);

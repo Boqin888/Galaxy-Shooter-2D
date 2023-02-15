@@ -40,7 +40,8 @@ public class Asteroid : MonoBehaviour
                 player.Damage(1);
             }
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(this.gameObject, 1.5f);
+            Destroy(this.gameObject);
+            //Destroy(GetComponent<Collider2D>());
             _spawnManager.StartSpawning();
         }
         if (other.tag == "Laser")
@@ -48,7 +49,8 @@ public class Asteroid : MonoBehaviour
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(other.gameObject);
             _spawnManager.StartSpawning();
-            Destroy(this.gameObject, 1.5f);
+            Destroy(this.gameObject);
+            //Destroy(GetComponent<Collider2D>());
         }
     }
 }
