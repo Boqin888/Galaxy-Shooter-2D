@@ -1594,7 +1594,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031110500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.04, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2027,6 +2027,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 4375650452235249469, guid: e256e329de83c324aacc5c96d4df73e4, type: 3}
+  _enemyDiagonalPrefab: {fileID: 4375650452235249469, guid: 0b06859b7c8fac44396aa5646dec1c17, type: 3}
   _enemyContainer: {fileID: 1460887539}
   powerups:
   - {fileID: 5583321642102443656, guid: 0e746c6abc7ee6244af312f33ad289e1, type: 3}
