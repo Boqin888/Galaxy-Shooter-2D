@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
     private AudioSource _audioSource;
     private float _fasterSpeed = 10f;
 
-    private int _ammoCount = 3;
+    private int _ammoCount = 10;
 
     [SerializeField]
     private GameObject _smallThruster;
@@ -62,17 +62,28 @@ public class Player : MonoBehaviour
     private string _chargingText = "l";
     private bool _isDischarging = false;
     private Camera _camera;
+    //private Enemy _enemy;
+    //private Powerup _powerup;
+
+    // Enemies
+    [SerializeField]
+    private GameObject _enemyDiagonal;
+    [SerializeField]
+    private GameObject _enemyHorizontal;
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(SpeedCharging());
         transform.position = new Vector3(0,-4,0);
+        _leftEngine.SetActive(false);
+        _rightEngine.SetActive(false);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>(); //could also put in Spawn Manager tag
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _audioSource = GetComponent<AudioSource>();
         _camera = GameObject.Find("Main Camera").GetComponent<Camera>();
-        //_enhancedLaser = GameObject.Find("laser").GetComponent<Laser >(); // secondary fire powerup attempt
+        //_enemy = GameObject.Find("Enemy").GetComponent<Enemy>();
+        //_powerup = FindAnyObjectByType<Powerup>();
 
         if (_audioSource == null)
         {
@@ -94,6 +105,10 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("The camera is NULL");
         }
+        //if (_enemy == null)
+        //{
+        //    Debug.LogError("The enemy is NULL");
+        //}
     }
 
     // Update is called once per frame
@@ -209,25 +224,27 @@ public class Player : MonoBehaviour
         {
             _lives -= livesChange;
         }
-        else if (_lives < 6 && livesChange > 0)
+        else if (livesChange > 0)
         {
             _lives -= livesChange;
             StartCoroutine(_camera.CameraShake());
         }
-        else
-        {
-            return;
-        }
 
-        
+
 
         if (_lives == 2)
         {
             _leftEngine.SetActive(true);
+            _rightEngine.SetActive(false);
         }
         if (_lives == 1)
         {
             _rightEngine.SetActive(true);
+        }
+        if (_lives > 2)
+        {
+            _leftEngine.SetActive(false);
+            _rightEngine.SetActive(false);
         }
         _uiManager.UpdateLives(_lives);
 
@@ -275,6 +292,10 @@ public class Player : MonoBehaviour
     {
         _shieldActive = true;
         _shieldVisualizer.SetActive(true);
+        _shieldActive1 = false;
+        _shieldVisualizer1.SetActive(false);
+        _shieldActive2 = false;
+        _shieldVisualizer2.SetActive(false);
     }
 // 2D Game Part III -------------------------------------------------------------------------------
     public void ShieldActive1()
@@ -293,6 +314,7 @@ public class Player : MonoBehaviour
     {
         _score += points;
         _uiManager.UpdateScore(_score);
+        _spawnManager.SpawnController(_score);
     }
 
     public void AmmoDisplay()
@@ -301,46 +323,32 @@ public class Player : MonoBehaviour
         _uiManager.UpdateAmmo(_ammoCount);
     }
 
-    public void MoreAmmoActive()
+    public void MoreAmmoActive(int ammo)
     {
-        _ammoCount += 1;
+        if (_ammoCount < 10)
+        {
+            _ammoCount += ammo;
+            if (_ammoCount > 10)
+            {
+                _ammoCount = 10;
+            }
+        }
+        else
+        {
+            return;
+        }
         _uiManager.UpdateAmmo(_ammoCount);
     }
-
-    // didn't get this to work with the lives powerup so modified damage method to allow for inverse (-1) damage instead
-    //public void livespowerup()
-    //{
-    //    _lives += 1;
-    //    _uimanager.updatelives(_lives);
-    //}
-
-    // secondary fire powerup attempt
-    //public void EnhancedBulletsActive()
-    //{
-    //    _enhancedBullets = true;
-    //    _enhancedLaser.EnhanceBulletsON();
-    //    StartCoroutine(EnhancedBulletsPowerDownRoutine());
-    //}
-
-    //IEnumerator EnhancedBulletsPowerDownRoutine()
-    //{
-    //    while (_enhancedBullets == true)
-    //    {
-    //        yield return new WaitForSeconds(8f);
-    //        _enhancedBullets = false;
-    //        //_enhancedLaser.EnhanceBulletsOFF();
-    //    }
-    //}
 
     public void EnhancedTripleShotActive()
     {
         _isEnhancedTripleShotActive = true;
-        StartCoroutine(TripleShotPowerDownRoutine());
+        StartCoroutine(EnhancedTripleShotPowerDownRoutine());
     }
 
     IEnumerator EnhancedTripleShotPowerDownRoutine()
     {
-        while (_isTripleShotActive == true)
+        while (_isEnhancedTripleShotActive == true)
         {
             yield return new WaitForSeconds(5f);
             _isEnhancedTripleShotActive = false;
@@ -378,6 +386,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 }
 
 

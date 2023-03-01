@@ -6,20 +6,9 @@ public class Laser : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 8f;
+    private bool _isEnemyLaser = false;
     [SerializeField]
-
-    // Secondary Fire powerup attempt
-    //private GameObject _enhancedBulletLeftLeft;
-    //[SerializeField]
-    //private GameObject _enhancedBulletLeftMiddle;
-    //[SerializeField]
-    //private GameObject _enhancedBulletLeftRight;
-    //[SerializeField]
-    //private GameObject _enhancedBulletRightLeft;
-    //[SerializeField]
-    //private GameObject _enhancedBulletRightMiddle;
-    //[SerializeField]
-    //private GameObject _enhancedBulletRightRight;
+    private bool _isEnemyLaserUp = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +18,18 @@ public class Laser : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        if ((_isEnemyLaser == false) || (_isEnemyLaserUp == true))
+        {
+            MoveUp();
+        }
+        else
+        {
+            MoveDown();
+        }
+    }
+
+    void MoveUp()
     {
         transform.Translate(Vector3.up * _speed * Time.deltaTime);
 
@@ -42,16 +43,43 @@ public class Laser : MonoBehaviour
         }
     }
 
-    // Secondary Fire powerup attempt
-    //public void EnhanceBulletsON()
-    //{
-    //    Instantiate(_enhancedBulletLeftLeft, transform.position, Quaternion.identity);
-    //    Instantiate(_enhancedBulletLeftMiddle, transform.position, Quaternion.identity);
-    //    Instantiate(_enhancedBulletLeftRight, transform.position, Quaternion.identity);
-    //    Instantiate(_enhancedBulletRightLeft, transform.position, Quaternion.identity);
-    //    Instantiate(_enhancedBulletRightMiddle, transform.position, Quaternion.identity);
-    //    Instantiate(_enhancedBulletRightRight, transform.position, Quaternion.identity);
-    //}
+    void MoveDown()
+    {
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+
+        if (transform.position.y <= -9f)
+        {
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void AssignEnemyLaser()
+    {
+        _isEnemyLaser = true;
+    }
+
+    public void AssignEnemyLaserUp()
+    {
+        _isEnemyLaserUp = true;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag == "Player" && (_isEnemyLaser == true || _isEnemyLaserUp == true))
+        {
+            Player player = other.GetComponent<Player>();
+
+            if(player != null)
+            {
+                player.Damage(1);
+            }
+            Destroy(this.gameObject);
+        }
+    }
 }
 
     

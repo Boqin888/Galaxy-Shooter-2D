@@ -6,10 +6,16 @@ public class EnemyDiagonal : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 3f;
+    [SerializeField]
     private float _horizontalSpeed = 2.5f;
     private Player _player;
-    private Animator _anim;
+    //[SerializeField]
+    //private Animator _anim;
     private AudioSource _audioSource;
+    [SerializeField]
+    private bool _detected = false;
+    [SerializeField]
+    private GameObject _explosionPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -20,19 +26,17 @@ public class EnemyDiagonal : MonoBehaviour
         {
             Debug.LogError("The Player is NULL.");
         }
-
-        _anim = GetComponent<Animator>();
-        if (_anim == null)
-        {
-            Debug.LogError("The Animator is NULL.");
-        }
+        //_anim = GetComponent<Animator>();
+        //if (_anim == null)
+        //{
+        //    Debug.LogError("The Animator is NULL.");
+        //}
     }
 
     // Update is called once per frame
     void Update()
     {
         EnemyMovement();
-        
     }
 
     void EnemyMovement()
@@ -57,6 +61,25 @@ public class EnemyDiagonal : MonoBehaviour
 
     }
 
+    public void DetectedAction()
+    {
+        _detected = true;
+        _speed = 4.5f;
+        _horizontalSpeed = 0f;
+        StartCoroutine(StopRamming());
+    }
+
+    IEnumerator StopRamming()
+    {
+        while (_detected == true)
+        {       
+            yield return new WaitForSeconds(1.5f);
+            _detected = false;
+            _speed = 3f;
+            _horizontalSpeed = 2.5f;
+        }      
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         //Debug.Log("Collided");
@@ -68,12 +91,13 @@ public class EnemyDiagonal : MonoBehaviour
                 player.AddScore(10);
                 player.Damage(1);
             }
-            _anim.SetTrigger("OnEnemyDeath");                            // can also pass OnEnemyDeath ID
+            //_anim.SetTrigger("OnEnemyDeath");                                           // can also pass OnEnemyDeath ID
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _speed = 0;
             _horizontalSpeed = 0;
             _audioSource.Play();
             Destroy(GetComponent<Collider2D>());
-            Destroy(this.gameObject, 2.5f);
+            Destroy(this.gameObject);
         }
         
         if (other.tag == "Laser")
@@ -83,12 +107,13 @@ public class EnemyDiagonal : MonoBehaviour
             {
                 _player.AddScore(10);
             }
-            _anim.SetTrigger("OnEnemyDeath");
+            //_anim.SetTrigger("OnEnemyDeath");
+            Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             _speed = 0;
             _horizontalSpeed = 0;
             _audioSource.Play();
             Destroy(GetComponent<Collider2D>());
-            Destroy(this.gameObject, 2.5f);
+            Destroy(this.gameObject);
         }
     }
 }

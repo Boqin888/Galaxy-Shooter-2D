@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         _scoreText.text = "Score: " + 0;
-        _ammoCountText.text = "Ammo: " + 3;
+        _ammoCountText.text = "Ammo: " + 10 +"/10";
         _speedCharger.text = "l";
         _LivesImg1.gameObject.SetActive(false);
         _gameOverText.gameObject.SetActive(false);
@@ -60,7 +60,7 @@ public class UIManager : MonoBehaviour
         else
         {
             _outOfAmmo = false;
-            _ammoCountText.text = "Ammo: " + ammoCount;
+            _ammoCountText.text = "Ammo: " + ammoCount + "/10";
         }          
     }
 
@@ -112,12 +112,12 @@ public class UIManager : MonoBehaviour
     {
         while (_outOfAmmo == true)
         {
-            _ammoCountText.text = "Ammo: " + 0;
+            _ammoCountText.text = "Ammo: " + 0 + "/10";
             yield return new WaitForSeconds(.5f);
             _ammoCountText.text = "";
             yield return new WaitForSeconds(.5f);
         }
-        _ammoCountText.text = "Ammo: " + ammo;
+        _ammoCountText.text = "Ammo: " + ammo + "/10";
     }
 
     public void Charger(string charging)

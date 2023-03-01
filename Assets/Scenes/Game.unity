@@ -170,7 +170,7 @@ MonoBehaviour:
   _shieldVisualizer: {fileID: 506437264}
   _shieldVisualizer1: {fileID: 253375742}
   _shieldVisualizer2: {fileID: 1044096910}
-  _score: 0
+  _score: 100
   _rightEngine: {fileID: 1113037909}
   _leftEngine: {fileID: 1978216343}
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
@@ -178,6 +178,8 @@ MonoBehaviour:
   _smallThruster: {fileID: 627901129}
   _bigThruster: {fileID: 1938111918}
   _shiftSpeedActive: 0
+  _enemyDiagonal: {fileID: 4375650452235249469, guid: 0b06859b7c8fac44396aa5646dec1c17, type: 3}
+  _enemyHorizontal: {fileID: 2354178283287716029, guid: 1b9b1dbc8505b4044b77a0783f4d745d, type: 3}
 --- !u!212 &33966816
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -238,7 +240,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 33966814}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.04, y: -2.54, z: 0}
+  m_LocalPosition: {x: 0, y: -4, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -882,7 +884,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -80}
+  m_AnchoredPosition: {x: 180, y: -40}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &460983822
@@ -1594,7 +1596,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031110500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.04, y: -0, z: 0}
+  m_LocalPosition: {x: 0.04, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1628,7 +1630,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1113037910
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2028,14 +2030,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyPrefab: {fileID: 4375650452235249469, guid: e256e329de83c324aacc5c96d4df73e4, type: 3}
   _enemyDiagonalPrefab: {fileID: 4375650452235249469, guid: 0b06859b7c8fac44396aa5646dec1c17, type: 3}
+  _enemyWigglePrefab: {fileID: 3116740346345155383, guid: 08e42d7761c95524d97efcbb8c7ac7e0, type: 3}
+  _enemyHorizontalWigglePrefab: {fileID: 2354178283287716029, guid: 1b9b1dbc8505b4044b77a0783f4d745d, type: 3}
   _enemyContainer: {fileID: 1460887539}
   powerups:
   - {fileID: 5583321642102443656, guid: 0e746c6abc7ee6244af312f33ad289e1, type: 3}
   - {fileID: 1091506753186755460, guid: 1796038202501dc4db78e7f1fd06fa96, type: 3}
   - {fileID: 3945674773635019586, guid: dc5197d1ff56b314d884ea147b6453af, type: 3}
-  - {fileID: 7416725138055113711, guid: fa477757a15620d44a54fac1cc68ba3d, type: 3}
-  - {fileID: 6756405295984428730, guid: a3b2ecbde222f854d81359c1c1876895, type: 3}
+  - {fileID: 5703338163926560585, guid: b13d4a681c8dcf648900c450a4eb4a04, type: 3}
+  - {fileID: 3913597805495303428, guid: a3b2ecbde222f854d81359c1c1876895, type: 3}
   - {fileID: 5583321642102443656, guid: 7b80018f547b3f44eacd0f8252598000, type: 3}
+  - {fileID: 816700752126878329, guid: ef7d754b44a42ff48acbea8140ca4f0d, type: 3}
+  - {fileID: 5703338163926560585, guid: b13d4a681c8dcf648900c450a4eb4a04, type: 3}
+  - {fileID: 5703338163926560585, guid: b13d4a681c8dcf648900c450a4eb4a04, type: 3}
+  _enemySpawnTime: 3
 --- !u!4 &1418656224
 Transform:
   m_ObjectHideFlags: 0
@@ -2166,7 +2174,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Ammo: 15'
+  m_Text: 'Ammo: 3/10'
 --- !u!222 &1563184497
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2192,8 +2200,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -100, y: -80}
-  m_SizeDelta: {x: 97, y: 30}
+  m_AnchoredPosition: {x: -87.141785, y: -81.785995}
+  m_SizeDelta: {x: 122.7162, y: 26.428}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1589145135
 GameObject:
@@ -2724,7 +2732,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1978216344
 SpriteRenderer:
   m_ObjectHideFlags: 0

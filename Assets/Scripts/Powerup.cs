@@ -5,7 +5,7 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField]
-    private float _powerUpSpeed =  3f;
+    private float _powerUpSpeed = 3f;
 
     [SerializeField] //0=triple 1=spd 2=shiled
     private int powerupID;
@@ -15,9 +15,19 @@ public class Powerup : MonoBehaviour
 
     private UIManager _uiManager;
 
+    [SerializeField]
+
+    private Player _player;
+
     // Start is called before the first frame update
     void Start()
     {
+        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (_player == null)
+        {
+            Debug.LogError("The Player is NULL.");
+        }
+
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         if (_uiManager == null)
         {
@@ -28,10 +38,18 @@ public class Powerup : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TripleShotMovement();
+        if (Input.GetKey(KeyCode.C))
+        {
+            TowardPlayer();
+        }
+        else
+        {
+            PowerupMovement();
+        }
+        
     }
 
-    void TripleShotMovement()
+    void PowerupMovement()
     {
         transform.Translate(Vector3.down * _powerUpSpeed * Time.deltaTime);
 
@@ -40,6 +58,13 @@ public class Powerup : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
+
+    void TowardPlayer()
+    {
+        var step = _powerUpSpeed * Time.deltaTime; 
+        transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, step);
+    }
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -52,6 +77,7 @@ public class Powerup : MonoBehaviour
                 switch (powerupID)
                 {
                     case 0:
+                        player.MoreAmmoActive(1);
                         player.TripleShotActive();
                         break;
                     case 1:
@@ -61,13 +87,17 @@ public class Powerup : MonoBehaviour
                         player.ShieldActive();
                         break;
                     case 3:
-                        player.MoreAmmoActive();
+                        player.MoreAmmoActive(3);
                         break;
                     case 4:
                         player.Damage(-1);
                         break;
                     case 5:
+                        player.MoreAmmoActive(1);
                         player.EnhancedTripleShotActive();
+                        break;
+                    case 6:
+                        player.Damage(2);
                         break;
                     default:
                         Debug.Log("Default");
@@ -75,7 +105,11 @@ public class Powerup : MonoBehaviour
                 }
                 Destroy(this.gameObject);
             }
-        }        
+        }
+        if (other.tag == "EnemyLaser")
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
 
