@@ -8,11 +8,10 @@ public class DetectorHorizontal : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Debug.LogError("Near Player");
-            EnemyWiggleHorizontal _EnemyWiggleHorizontal = GetComponentInParent<EnemyWiggleHorizontal>();
-            if (_EnemyWiggleHorizontal != null)
+            EnemyWiggleHorizontal enemyWiggleHorizontal = GetComponentInParent<EnemyWiggleHorizontal>();
+            if (enemyWiggleHorizontal != null)
             {
-                _EnemyWiggleHorizontal.ShootUpward();
+                enemyWiggleHorizontal.ShootUpward();
             }
         }
     }

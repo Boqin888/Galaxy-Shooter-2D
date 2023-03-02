@@ -14,6 +14,8 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyHorizontalWigglePrefab;
     [SerializeField]
+    private GameObject _enemyAvoidPrefab;
+    [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] powerups;
@@ -24,6 +26,7 @@ public class SpawnManager : MonoBehaviour
     private bool _enemyDiagonalSpawning = false;
     private bool _enemyWiggleSpawning = false;
     private bool _enemyHorizontalWiggleSpawning = false;
+    private bool _enemyAvoidSpawning = false;
 
 
 
@@ -71,6 +74,12 @@ public class SpawnManager : MonoBehaviour
                 newEnemyWiggleHorizontal.transform.parent = _enemyContainer.transform;
                 yield return new WaitForSeconds(_enemySpawnTime);
             }
+            if (_enemyAvoidSpawning == true)
+            {
+                GameObject newEnemyAvoid = Instantiate(_enemyAvoidPrefab, posToSpawn, Quaternion.identity);
+                newEnemyAvoid.transform.parent = _enemyContainer.transform;
+                yield return new WaitForSeconds(_enemySpawnTime);
+            }
         }
     }
 
@@ -78,7 +87,6 @@ public class SpawnManager : MonoBehaviour
     {
         if (playerScore > 10)
         {
-            //_enemySpawnTime = _enemySpawnTime - 0.5f;
             _enemyDiagonalSpawning = true;
         }
         if (playerScore > 50)
@@ -88,6 +96,10 @@ public class SpawnManager : MonoBehaviour
         if (playerScore > 100)
         {
             _enemyHorizontalWiggleSpawning = true;
+        }
+        if (playerScore > 150)
+        {
+            _enemyAvoidSpawning = true;
         }
     }
 

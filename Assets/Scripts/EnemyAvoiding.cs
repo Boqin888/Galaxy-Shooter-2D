@@ -2,20 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyWiggleHorizontal : MonoBehaviour
+public class EnemyAvoiding : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 2f;
+    private float _speed = 3f;
+    private float _avoidSpeed = 6f;
 
     private Player _player;
     private Animator _anim;
     private AudioSource _audioSource;
 
     [SerializeField]
-    private GameObject _laserPrefab;
-
-    private float _canFire = -1f;
-    private float _fireRate = 2f;
+    private bool _avoid = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,41 +34,43 @@ public class EnemyWiggleHorizontal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HorizontalMovement();
+        if (_avoid == true)
+        {
+            transform.Translate(Vector3.left * _avoidSpeed * Time.deltaTime);
+        }
+        else
+        {
+            VerticalMovement();
+        }       
     }
 
-    void HorizontalMovement()
+    void VerticalMovement()
     {
-        //float yPosition = Mathf.Sin(Time.time * _wiggleSpeed) * _wiggleDistance;             it only oscillates between x-axis
-        //transform.localPosition = new Vector3(transform.position.x, yPosition, 0);
-        transform.Translate(Vector3.right * _speed * Time.deltaTime);
-        if (transform.position.x >= 10f)
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        if (transform.position.y <= -8f)
         {
-            float randomY = Random.Range(6f, -6f);
-            transform.position = new Vector3(-11, randomY, 0);      //why it doesn't go at random position?
+            float randomX = Random.Range(5f, -5f);
+            transform.position = new Vector3(randomX, 7.5f, 0);      
         }
     }
 
-    public void ShootUpward()
+    public void Avoiding()
     {
-        if (Time.time > _canFire)
+        _avoid = true;
+        StartCoroutine(StopAvoiding());
+    }
+
+    IEnumerator StopAvoiding()
+    {
+        while (_avoid == true)
         {
-            _canFire = Time.time + _fireRate;
-            GameObject enemyLaserUp = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
-            Laser[] lasers = enemyLaserUp.GetComponentsInChildren<Laser>();
-
-            for (int i = 0; i < lasers.Length; i++)
-            {
-                lasers[i].AssignEnemyLaserUp();
-
-            }
-            //Debug.Break(); Pause game to see what's going on
-        }       
+            yield return new WaitForSeconds(0.5f);
+            _avoid = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //Debug.Log("Collided");
         if (other.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
@@ -79,9 +79,8 @@ public class EnemyWiggleHorizontal : MonoBehaviour
                 player.AddScore(10);
                 player.Damage(1);
             }
-            _anim.SetTrigger("OnEnemyDeath");                            // can also pass OnEnemyDeath ID
+            _anim.SetTrigger("OnEnemyDeath");                           
             _speed = 0;
-            //_wiggleSpeed = 0;
             _audioSource.Play();
             Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
@@ -96,7 +95,6 @@ public class EnemyWiggleHorizontal : MonoBehaviour
             }
             _anim.SetTrigger("OnEnemyDeath");
             _speed = 0;
-            //_wiggleSpeed = 0;
             _audioSource.Play();
             Destroy(GetComponent<Collider2D>());
             Destroy(this.gameObject, 2.5f);
