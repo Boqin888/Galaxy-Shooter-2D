@@ -9,8 +9,6 @@ public class EnemyDiagonal : MonoBehaviour
     [SerializeField]
     private float _horizontalSpeed = 2.5f;
     private Player _player;
-    //[SerializeField]
-    //private Animator _anim;
     private AudioSource _audioSource;
     [SerializeField]
     private bool _detected = false;
@@ -26,11 +24,10 @@ public class EnemyDiagonal : MonoBehaviour
         {
             Debug.LogError("The Player is NULL.");
         }
-        //_anim = GetComponent<Animator>();
-        //if (_anim == null)
-        //{
-        //    Debug.LogError("The Animator is NULL.");
-        //}
+        if (_audioSource == null)
+        {
+            Debug.LogError("The Aduio is NULL.");
+        }
     }
 
     // Update is called once per frame

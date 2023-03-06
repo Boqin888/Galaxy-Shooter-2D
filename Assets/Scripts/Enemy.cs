@@ -26,14 +26,19 @@ public class Enemy : MonoBehaviour
     {
         StartCoroutine(EnemyPowerup());
         _shieldVisualizer.SetActive(false);
+
         _player = GameObject.Find("Player").GetComponent<Player>();
+        _anim = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
+
         if (_player == null)
         {
             Debug.LogError("The Player is NULL.");
         }
-
-        _anim = GetComponent<Animator>();
+        if (_audioSource == null)
+        {
+            Debug.LogError("The Audio is NULL.");
+        }
         if (_anim == null)
         {
             Debug.LogError("The Animator is NULL.");

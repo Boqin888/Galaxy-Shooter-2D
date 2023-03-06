@@ -12,12 +12,9 @@ public class Powerup : MonoBehaviour
 
     [SerializeField]
     private AudioClip _clip;
-
     private UIManager _uiManager;
-
-    [SerializeField]
-
     private Player _player;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -98,6 +95,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 6:
                         player.Damage(2);
+                        break;
+                    case 7:
+                        player.SeekingLaserActive();
                         break;
                     default:
                         Debug.Log("Default");

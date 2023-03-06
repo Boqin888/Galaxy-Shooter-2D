@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
+    private GameObject _seekingLaserPrefab;
+    [SerializeField]
     private float _fireRate = 0.5f;
     private float _canFire = -1f;
     [SerializeField]
@@ -21,6 +23,8 @@ public class Player : MonoBehaviour
     private bool _isTripleShotActive = false;
     [SerializeField]
     private GameObject _enhancedTripleShotPrefab;
+    [SerializeField]
+    private bool _seekingLaser = false;
     [SerializeField]
     private bool _isEnhancedTripleShotActive = false;
     [SerializeField]
@@ -70,6 +74,8 @@ public class Player : MonoBehaviour
     private GameObject _enemyDiagonal;
     [SerializeField]
     private GameObject _enemyHorizontal;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -186,6 +192,11 @@ public class Player : MonoBehaviour
             else if (_isEnhancedTripleShotActive == true)
             {
                 Instantiate(_enhancedTripleShotPrefab, transform.position, Quaternion.identity);
+                AmmoDisplay();
+            }
+            else if (_seekingLaser == true)
+            {
+                Instantiate(_seekingLaserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
                 AmmoDisplay();
             }
             else
@@ -387,6 +398,20 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void SeekingLaserActive()
+    {
+        _seekingLaser = true;
+        StartCoroutine(SeekingLaserPowerDownRoutine());
+    }
+
+    IEnumerator SeekingLaserPowerDownRoutine()
+    {
+        while (_seekingLaser == true)
+        {
+            yield return new WaitForSeconds(5f);
+            _seekingLaser = false;
+        }
+    }
 }
 
 
