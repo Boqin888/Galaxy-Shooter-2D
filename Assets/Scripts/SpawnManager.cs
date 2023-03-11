@@ -16,17 +16,21 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyAvoidPrefab;
     [SerializeField]
+    private GameObject _bossPrefab;
+    [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
     private GameObject[] powerups;
-    private bool _stopSpawning = false;
+    [SerializeField]  private bool _stopSpawning = false;
     [SerializeField]
     private float _enemySpawnTime = 4f;
     private int _score;
+    private bool _normalSpawning = true;
     private bool _enemyDiagonalSpawning = false;
     private bool _enemyWiggleSpawning = false;
     private bool _enemyHorizontalWiggleSpawning = false;
     private bool _enemyAvoidSpawning = false;
+    private bool _bossSpawning = false;
 
 
 
@@ -52,10 +56,14 @@ public class SpawnManager : MonoBehaviour
         {           
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 9, 0);
             Vector3 posToSpawnHorizontal = new Vector3(-12, Random.Range(-5f, 5f), 0);
-            GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
-            newEnemy.transform.parent = _enemyContainer.transform;
-            yield return new WaitForSeconds(_enemySpawnTime);
 
+            if (_normalSpawning == true)
+            {
+                GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+                newEnemy.transform.parent = _enemyContainer.transform;
+                yield return new WaitForSeconds(_enemySpawnTime);
+            }
+            
             if(_enemyDiagonalSpawning == true)
             {
                 GameObject newEnemyDiagonal = Instantiate(_enemyDiagonalPrefab, posToSpawn, Quaternion.identity);
@@ -80,6 +88,12 @@ public class SpawnManager : MonoBehaviour
                 newEnemyAvoid.transform.parent = _enemyContainer.transform;
                 yield return new WaitForSeconds(_enemySpawnTime);
             }
+            if (_bossSpawning == true)
+            {
+                GameObject newBoss = Instantiate(_bossPrefab, new Vector3(-3.5f, 5, 0), Quaternion.identity);
+                newBoss.transform.parent = _enemyContainer.transform;
+                yield return new WaitForSeconds(10000);
+            }
         }
     }
 
@@ -100,6 +114,19 @@ public class SpawnManager : MonoBehaviour
         if (playerScore > 150)
         {
             _enemyAvoidSpawning = true;
+        }
+        if (playerScore > 200)
+        {
+            _bossSpawning = true;
+            _normalSpawning = false;
+            _enemyDiagonalSpawning = false;
+            _enemyWiggleSpawning = false;
+            _enemyHorizontalWiggleSpawning = false;
+            _enemyAvoidSpawning = false;           
+        }
+        if ((playerScore > 300) && (_enemyContainer.transform.childCount == 0))
+        {
+            _stopSpawning = true;
         }
     }
 

@@ -12,10 +12,12 @@ public class EnemyWiggle : MonoBehaviour
     private Player _player;
     private Animator _anim;
     private AudioSource _audioSource;
+    private float _xPos;
 
     // Start is called before the first frame update
     void Start()
     {
+        _xPos = transform.position.x;
         _player = GameObject.Find("Player").GetComponent<Player>();
         _audioSource = GetComponent<AudioSource>();
         if (_player == null)
@@ -38,14 +40,14 @@ public class EnemyWiggle : MonoBehaviour
 
     void WiggleMovement()
     {
-        float xPosition = Mathf.Sin(Time.time * _wiggleSpeed) * _wiggleDistance;
+        float xPosition = _xPos + (Mathf.Sin(Time.time * _wiggleSpeed) * _wiggleDistance);
         transform.localPosition = new Vector3(xPosition, transform.position.y, 0);
         transform.Translate(Vector3.down * _speed * Time.deltaTime);
 
         if (transform.position.y <= -9f)
         {
-            float randomX = Random.Range(5f, -5f);
-            transform.position = new Vector3(randomX, 10, 0);
+            _xPos = Random.Range(5f, -5f);
+            transform.position = new Vector3(_xPos, 10, 0);
         }
     }
 

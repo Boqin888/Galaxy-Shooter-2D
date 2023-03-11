@@ -184,6 +184,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire && _ammoCount > 0)                                 //GetKey for continuous fire
         {
             _canFire = Time.time + _fireRate;
+            _audioSource.Play();
             if (_isTripleShotActive == true)
             {
                 Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
@@ -196,7 +197,7 @@ public class Player : MonoBehaviour
             }
             else if (_seekingLaser == true)
             {
-                Instantiate(_seekingLaserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
+                Instantiate(_seekingLaserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);   //enemy.transform.scale = new Vector3()  // for rotation, instead of Quat.iden, use 
                 AmmoDisplay();
             }
             else
@@ -204,9 +205,7 @@ public class Player : MonoBehaviour
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.05f, 0), Quaternion.identity);
                 AmmoDisplay();
             }       
-        }
-
-        _audioSource.Play();
+        }       
     }
 
     public void Damage(int livesChange) 
