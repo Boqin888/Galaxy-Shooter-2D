@@ -159,7 +159,7 @@ MonoBehaviour:
   _laserPrefab: {fileID: 305037317746426963, guid: a7e4654495e0fed4c83aef677a1a58e6, type: 3}
   _seekingLaserPrefab: {fileID: 7135087165966624603, guid: 7a1d08346ca29ff4aab3588a74e4e3b9, type: 3}
   _fireRate: 0.5
-  _lives: 1000
+  _lives: 3
   _tripleShotPrefab: {fileID: 387588194013156692, guid: 9892411550851c840bcc44a36afc6c17, type: 3}
   _isTripleShotActive: 0
   _enhancedTripleShotPrefab: {fileID: 1088834667311380668, guid: 26e98df8cb9203b40803835ec7927daf, type: 3}
@@ -172,7 +172,7 @@ MonoBehaviour:
   _shieldVisualizer: {fileID: 506437264}
   _shieldVisualizer1: {fileID: 253375742}
   _shieldVisualizer2: {fileID: 1044096910}
-  _score: 190
+  _score: 0
   _rightEngine: {fileID: 1113037909}
   _leftEngine: {fileID: 1978216343}
   _laserSoundClip: {fileID: 8300000, guid: 75676f361bdfeaf41a46623e95df3dbc, type: 3}
