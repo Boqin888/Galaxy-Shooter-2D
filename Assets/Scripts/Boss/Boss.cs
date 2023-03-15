@@ -6,11 +6,16 @@ public class Boss : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 3f;
+    private UIManager _uiManager;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("The UI Manager is NULL");
+        }
     }
 
     // Update is called once per frame
@@ -21,6 +26,7 @@ public class Boss : MonoBehaviour
         if (transform.childCount == 0)
         {
             Destroy(this.gameObject);
+            _uiManager.GameWonSequence();
         }
     }
 

@@ -108,6 +108,25 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void GameWonSequence()
+    {
+        _gameOverText.gameObject.SetActive(true);
+        StartCoroutine(GameWonFlickerRoutine());
+        _restartText.gameObject.SetActive(true);
+        _gameManager.GameOver();
+    }
+
+    IEnumerator GameWonFlickerRoutine()
+    {
+        while (true)
+        {
+            _gameOverText.text = "WINNER!!!";
+            yield return new WaitForSeconds(.5f);
+            _gameOverText.text = "";
+            yield return new WaitForSeconds(.5f);
+        }
+    }
+
     IEnumerator AmmoCountFllickerRoutine(int ammo)
     {
         while (_outOfAmmo == true)
