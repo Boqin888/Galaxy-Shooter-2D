@@ -24,7 +24,7 @@ public class BossArms : MonoBehaviour
         {
             Destroy(this.gameObject);
             Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-            _audioSource.Play();
+            //_audioSource.Play();
         }
         
     }
